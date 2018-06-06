@@ -1,20 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { IngredientesEntity } from '../ingredientes/ingredientes.entity';
+import { IngredienteEntity } from '../ingredientes/ingredienteEntity';
 
 @Injectable()
 export class IngredientesService {
-  ingredientes: IngredientesEntity [] = [];
+  ingredientes: IngredienteEntity [] = [];
 
-  listarIngredientes(): IngredientesEntity[] {
+  listarIngredientes(): IngredienteEntity[] {
     return this.ingredientes;
   }
 
-  crearIngrediente(ingrediente: IngredientesEntity): IngredientesEntity{
+  crearIngrediente(ingrediente: IngredienteEntity): IngredienteEntity {
     this.ingredientes.push(ingrediente);
     return ingrediente;
   }
 
-  buscarIngrediente(idIngredienteABuscar: string): IngredientesEntity {
-    return this.ingredientes.find((ingrediente: IngredientesEntity) => ingrediente.idIngrediente === idIngredienteABuscar);
+  buscarIngrediente(idIngredienteABuscar: string): IngredienteEntity {
+    return this.ingredientes.find((ingrediente: IngredienteEntity) => ingrediente.idIngrediente === idIngredienteABuscar);
+  }
+
+  buscarIndiceIngrediente(idIngredienteABuscar: string): number {
+    return this.ingredientes.indexOf(this.ingredientes
+      .find((ingrediente: IngredienteEntity) =>
+        ingrediente.idIngrediente === idIngredienteABuscar));
+  }
+
+  actualizarIngrediente(indiceIngrediente: number, ingrediente: IngredienteEntity): IngredienteEntity {
+    for (let ingredienteKey in ingrediente) {
+      if (ingrediente[ingredienteKey] !== undefined) {
+        this.ingredientes[indiceIngrediente][ingredienteKey] = ingrediente[ingredienteKey];
+      }
+    }
+    return this.ingredientes[indiceIngrediente];
   }
 }

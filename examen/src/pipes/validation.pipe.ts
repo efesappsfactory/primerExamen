@@ -3,7 +3,7 @@ import { BadRequestException } from '../exceptions/bad-request.exception';
 import * as Joi from 'joi';
 
 @Injectable()
-export class ComidaPipe implements PipeTransform {
+export class ValidationPipe implements PipeTransform {
 
   constructor(private readonly _schema){}
 

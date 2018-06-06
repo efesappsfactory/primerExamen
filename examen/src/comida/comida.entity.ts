@@ -1,5 +1,5 @@
 export class ComidaEntity {
-  idPlato: number;
+  idPlato: string;
   nombrePlato: string;
   descripcionPlato: string;
   nacionalidad: string;

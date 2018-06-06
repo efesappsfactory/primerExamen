@@ -1,4 +1,4 @@
-export class IngredientesEntity {
+export class IngredienteEntity {
   idIngrediente: string;
   nombreIngrediente: string;
   cantidad: number;
