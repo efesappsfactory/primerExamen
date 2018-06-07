@@ -1,4 +1,4 @@
 export class UsuarioEntity {
-  nombreUsuario: string;
-  passwordUsuario: string;
+  usuario: string;
+  password: string;
 }

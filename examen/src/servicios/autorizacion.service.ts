@@ -3,9 +3,17 @@ import { UsuarioEntity } from '../usuario/usuario.entity';
 
 @Injectable()
 export class AutorizacionService {
-  usuarios: UsuarioEntity [] = [];
+  usuarios: UsuarioEntity [] = [{
+    usuario: 'adrianeguez',
+    password: '12345678910'
+  }];
 
-  buscarUsuario(nombreUsuarioABuscar: string): UsuarioEntity{
-    return this.usuarios.find((usuario: UsuarioEntity) => usuario.nombreUsuario === nombreUsuarioABuscar);
+  validarUsuario(usuarioAValidar: UsuarioEntity): boolean{
+    const usuarioRecuperado = this.usuarios.find((usuario: UsuarioEntity) => usuario.usuario === usuarioAValidar.usuario);
+    if (usuarioRecuperado.password === usuarioAValidar.password) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
