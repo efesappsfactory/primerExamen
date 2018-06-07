@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Post, Put, Req, Res } from '@nestjs/commo
 import { ComidaService } from '../servicios/comida.service';
 import { COMIDA_SCHEMA } from '../comida/comida.schema';
 import { ValidationPipe } from '../pipes/validation.pipe';
+import { BadRequestException } from '../exceptions/bad-request.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
 
 @Controller('Comida')
 
@@ -13,10 +15,19 @@ export class ComidaController {
   listarTodos(
     @Res() response
   ) {
+
     const comidas = this._comidaService.listarComidas();
-    return response
-      .status(200)
-      .send(comidas);
+
+    if (comidas.length === 0) {
+      throw new NotFoundException(
+        {
+          mensaje: 'No se ha encontrado registro de comida alguno.'
+        },
+        10
+      );
+    } else {
+      return response.send(comidas);
+    }
   }
 
   @Post()
@@ -36,7 +47,17 @@ export class ComidaController {
 
     const comidaCreada = this._comidaService.crearComida(nuevaComida);
 
-    return response.send(comidaCreada);
+    if (!comidaCreada) {
+      throw new BadRequestException(
+        {
+          mensaje: 'No se pudo insertar el registro. Por favor verifique la entrada.'
+        },
+        10
+      );
+    } else {
+      return response.send(comidaCreada);
+    }
+
   }
 
   @Get('/:idComida')
@@ -47,9 +68,17 @@ export class ComidaController {
 
     const comida = this._comidaService.buscarComida(idComida);
 
-    return response
-      .status(200)
-      .send(comida);
+    if (!comida) {
+      throw new NotFoundException(
+        {
+          mensaje: 'No se ha encontrado el registro con identificador' + idComida +'.'
+        },
+        10
+      );
+    } else {
+      return response.send(comida);
+    }
+
   }
 
   @Put('/:idComida')
@@ -76,6 +105,15 @@ export class ComidaController {
         indiceComida,
         comidaActualizada);
 
-    return response.send(comida);
+    if (!comida) {
+      throw new BadRequestException(
+        {
+          mensaje: 'No se pudo actualizar el registro. Por favor verifique la entrada.'
+        },
+        10
+      );
+    } else {
+      return response.send(comida);
+    }
   }
 }

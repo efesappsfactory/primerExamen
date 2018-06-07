@@ -3,6 +3,7 @@ import { IngredienteEntity } from '../ingredientes/ingredienteEntity';
 
 @Injectable()
 export class IngredientesService {
+
   ingredientes: IngredienteEntity [] = [];
 
   listarIngredientes(): IngredienteEntity[] {

@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Post, Put, Req, Res } from '@nestjs/commo
 import { ValidationPipe } from '../pipes/validation.pipe';
 import { INGREDIENTES_SCHEMA } from '../ingredientes/ingredientes.schema';
 import { IngredientesService } from '../servicios/ingredientes.service';
+import { BadRequestException } from '../exceptions/bad-request.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
 
 @Controller('Ingredientes')
 
@@ -15,9 +17,18 @@ export class IngredientesController {
     @Res() response
   ) {
     const ingredientes = this._ingredientesService.listarIngredientes();
-    return response
-      .status(200)
-      .send(ingredientes);
+
+    if (ingredientes.length === 0) {
+      throw new NotFoundException(
+        {
+          mensaje: 'No se ha encontrado registro de ingrediente alguno.'
+        },
+        10
+      );
+    } else {
+      return response.send(ingredientes);
+    }
+
   }
 
   @Post()
@@ -38,18 +49,38 @@ export class IngredientesController {
 
     const ingredienteCreado = this._ingredientesService.crearIngrediente(nuevoIngrediente);
 
-    return response.send(ingredienteCreado);
+    if (!ingredienteCreado) {
+      throw new BadRequestException(
+        {
+          mensaje: 'No se pudo insertar el registro. Por favor verifique la entrada.'
+        },
+        10
+      );
+    } else {
+      return response.send(ingredienteCreado);
+    }
+
   }
 
   @Get('/:idIngrediente')
   obtenerUno(
     @Res() response,
-    @Param() paramParams
+    @Param('idIngrediente') idIngrediente
   ) {
-    const ingrediente = this._ingredientesService.buscarIngrediente(paramParams.idIngrediente);
-    return response
-      .status(200)
-      .send(ingrediente);
+
+    const ingrediente = this._ingredientesService.buscarIngrediente(idIngrediente);
+
+    if (!ingrediente) {
+      throw new NotFoundException(
+        {
+          mensaje: 'No se ha encontrado el registro con identificador' + idIngrediente +'.'
+        },
+        10
+      );
+    } else {
+      return response.send(ingrediente);
+    }
+
   }
 
   @Put('/:idIngrediente')
@@ -77,6 +108,15 @@ export class IngredientesController {
         indiceIngrediente,
         ingredienteActualizado);
 
-    return response.send(ingrediente);
+    if (!ingrediente) {
+      throw new BadRequestException(
+        {
+          mensaje: 'No se pudo actualizar el registro. Por favor verifique la entrada.'
+        },
+        10
+      );
+    } else {
+      return response.send(ingrediente);
+    }
   }
 }
