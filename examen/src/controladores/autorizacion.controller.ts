@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
 import { AutorizacionService } from '../servicios/autorizacion.service';
 import { NotFoundException } from '../exceptions/not-found.exception';
 
@@ -30,6 +30,26 @@ export class AutorizacionController {
         10
       )
     }
+  }
+
+  @Post('cerrarSesion')
+  cerrarSesion(
+    @Req() request,
+    @Res() response
+  ){
+    const existeCookie = request.cookies['token'];
+    if (existeCookie) {
+      response.cookie('token', undefined);
+      return response.send({mensaje: 'Usted ha salido del sistema.'})
+    } else {
+      throw new NotFoundException(
+        {
+          mensaje: 'No existe la cookie.'
+        },
+        10
+      )
+    }
+
   }
 
 }
