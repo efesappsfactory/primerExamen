@@ -11,16 +11,18 @@ export class AutorizacionController {
   @Post('iniciarSesion')
   iniciarSesion(
     @Body() bodyParams,
+    @Req() request,
     @Res() response
   ){
 
     const usuarioRecibido = {
       usuario: bodyParams.usuario,
-      password: bodyParams.password
+      password: bodyParams.password,
     };
 
+    console.log('Cookies: ', request.cookies);
+    response.cookie('token', bodyParams.usuario);
     if (this._autorizacionService.validarUsuario(usuarioRecibido)){
-      response.cookie('token', bodyParams.usuario);
       return response.send({mensaje: 'ok'})
     } else {
       throw new NotFoundException(
